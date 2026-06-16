@@ -24,9 +24,48 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- App Actions: tick habit -->
+            <intent-filter>
+                <action android:name="com.zelv.track.TICK_HABIT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- App Actions: add shopping item -->
+            <intent-filter>
+                <action android:name="com.zelv.track.ADD_SHOPPING"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- App Actions: open screen -->
+            <intent-filter>
+                <action android:name="com.zelv.track.OPEN_SCREEN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- App Actions: tick subtask -->
+            <intent-filter>
+                <action android:name="com.zelv.track.TICK_SUBTASK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- App Actions: add subtask to group -->
+            <intent-filter>
+                <action android:name="com.zelv.track.ADD_SUBTASK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- App Actions: add task group to project -->
+            <intent-filter>
+                <action android:name="com.zelv.track.ADD_TASK_GROUP"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- App Actions: create new project -->
+            <intent-filter>
+                <action android:name="com.zelv.track.CREATE_PROJECT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <!-- App Actions / Google Assistant shortcut definitions -->
+        <meta-data
+            android:name="android.app.shortcuts"
+            android:resource="@xml/shortcuts"/>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

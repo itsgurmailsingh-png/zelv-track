@@ -4,6 +4,7 @@ import 'screens/heatmap_screen.dart';
 import 'screens/projects_screen.dart';
 import 'screens/shopping_screen.dart';
 import 'services/theme_service.dart';
+import 'services/intent_service.dart';
 import 'theme/app_theme.dart';
 
 class MainNav extends StatefulWidget {
@@ -15,6 +16,21 @@ class MainNav extends StatefulWidget {
 
 class _MainNavState extends State<MainNav> {
   int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Register navigation callback so IntentService can switch tabs
+    IntentService.instance.onNavigate = (idx) {
+      if (mounted) setState(() => _index = idx);
+    };
+  }
+
+  @override
+  void dispose() {
+    IntentService.instance.onNavigate = null;
+    super.dispose();
+  }
 
   static const _screens = [
     RoutineScreen(),

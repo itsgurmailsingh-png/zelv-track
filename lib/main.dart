@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'services/storage_service.dart';
 import 'services/theme_service.dart';
+import 'services/intent_service.dart';
 import 'theme/app_theme.dart';
 import 'main_nav.dart';
 
@@ -23,6 +24,10 @@ Future<void> main() async {
   // Init storage first (opens Hive), then theme (opens prefs box)
   await StorageService.instance.init();
   await ThemeService.instance.init();
+
+  // Init intent service (Google Assistant App Actions)
+  IntentService.instance.init();
+  await IntentService.instance.handleLaunchIntent();
 
   runApp(const RoutineTrackerApp());
 }

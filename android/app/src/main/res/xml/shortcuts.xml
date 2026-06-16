@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- TICK HABIT: "Hey Google, tick cold shower in Zelv Track" -->
+  <capability android:name="actions.intent.OPEN_APP_FEATURE">
+    <intent
+      android:action="com.zelv.track.TICK_HABIT"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="feature" android:key="habit_name"/>
+    </intent>
+  </capability>
+
+  <!-- ADD SHOPPING: "Hey Google, add oat milk to shopping in Zelv Track" -->
+  <capability android:name="actions.intent.CREATE_SHOPPING_LIST_ITEM">
+    <intent
+      android:action="com.zelv.track.ADD_SHOPPING"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="item.name"  android:key="item_name"/>
+      <parameter android:name="item.price" android:key="shop_name"/>
+    </intent>
+  </capability>
+
+  <!-- OPEN SCREEN: "Hey Google, open shopping in Zelv Track" -->
+  <capability android:name="actions.intent.OPEN_APP_FEATURE">
+    <intent
+      android:action="com.zelv.track.OPEN_SCREEN"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="feature" android:key="screen_name"/>
+    </intent>
+  </capability>
+
+  <!-- TICK SUBTASK: "Hey Google, mark pension transfer done in Zelv Track" -->
+  <capability android:name="actions.intent.OPEN_APP_FEATURE">
+    <intent
+      android:action="com.zelv.track.TICK_SUBTASK"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="feature" android:key="subtask_name"/>
+    </intent>
+  </capability>
+
+  <!-- ADD SUBTASK: "Hey Google, add book dentist to Health in Zelv Track" -->
+  <capability android:name="actions.intent.CREATE_THING">
+    <intent
+      android:action="com.zelv.track.ADD_SUBTASK"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="thing.name"        android:key="subtask_name"/>
+      <parameter android:name="thing.description" android:key="group_name"/>
+    </intent>
+  </capability>
+
+  <!-- ADD TASK GROUP: "Hey Google, add group Finance to Geneva Exit in Zelv Track" -->
+  <capability android:name="actions.intent.CREATE_THING">
+    <intent
+      android:action="com.zelv.track.ADD_TASK_GROUP"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="thing.name"        android:key="group_name"/>
+      <parameter android:name="thing.description" android:key="project_name"/>
+    </intent>
+  </capability>
+
+  <!-- CREATE PROJECT: "Hey Google, create project Home Renovation in Zelv Track" -->
+  <capability android:name="actions.intent.CREATE_THING">
+    <intent
+      android:action="com.zelv.track.CREATE_PROJECT"
+      android:targetPackage="com.example.routine_tracker"
+      android:targetClass="com.example.routine_tracker.MainActivity">
+      <parameter android:name="thing.name" android:key="project_name"/>
+    </intent>
+  </capability>
+
+</shortcuts>
