@@ -1,0 +1,26 @@
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+*.ipr
+*.iws
+.idea/
+*.log
+
+# Personal backup
+lib/models/models.dart.personal_backup
+
+# Release APK
+release/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude/AI session data
+.claude/
+.claude-flow/
+preview/
