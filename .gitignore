@@ -24,3 +24,8 @@ Thumbs.db
 .claude/
 .claude-flow/
 preview/
+
+# Signing keys — NEVER commit these
+android/key.properties
+android/app/*.jks
+android/app/*.keystore

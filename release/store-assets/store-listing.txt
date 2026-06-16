@@ -1,0 +1,52 @@
+════════════════════════════════════════
+ZELV TRACK — PLAY STORE LISTING
+════════════════════════════════════════
+
+APP NAME (50 chars max):
+Zelv Track – Routine & Habit Tracker
+
+SHORT DESCRIPTION (80 chars max):
+Build better habits. Track projects. Shop smarter. All offline, all private.
+
+FULL DESCRIPTION (4000 chars max):
+Zelv Track is a clean, focused productivity app designed for people who want to build strong daily routines, manage projects with real structure, and keep a smart shopping list — all in one place, all stored privately on your device.
+
+🌅 DAILY ROUTINE TRACKER
+Your day is split into time blocks — Morning, Work, Midday, Afternoon, Evening, and Night. Each block holds the habits that belong there. Tap to check them off as you go. A Good Morning card at the top shows your streak, today's progress, and the date.
+
+Non-negotiable habits are highlighted so you never lose sight of your anchors.
+
+📊 STATS & HEATMAP
+See how consistent you've really been. A 7-day bar chart shows your daily completion percentage at a glance. The habit heatmap colours each cell by time block so you can spot patterns — are you great in the morning but dropping off in the evening?
+
+A ranked habit list shows your most and least consistent habits so you know exactly where to focus.
+
+🎯 PROJECTS — 3-LEVEL HIERARCHY
+Real projects have real structure. Zelv Track gives you:
+
+  Project → Task Group → Subtask
+
+Create a project like "Home Renovation", add groups like "Planning", "Building", "Finishing", then add individual subtasks inside each. Collapse groups you're not working on. Archive projects when they're done. Add everything inline — no extra screens, no friction.
+
+🛒 SMART SHOPPING LIST
+Organise your shopping by store. Items are grouped under shops (Migros, Coop, Lidl, Aldi, Pharmacy — fully customisable). Add a brand field so you never grab the wrong product. Tap to check off items as you shop. Done items move to an "In Cart" section at the bottom.
+
+🎤 GOOGLE ASSISTANT INTEGRATION
+Control Zelv Track hands-free:
+• "Hey Google, tick cold shower in Zelv Track"
+• "Hey Google, add milk to shopping in Zelv Track"
+• "Hey Google, mark pension transfer done in Zelv Track"
+• "Hey Google, create project Home Renovation in Zelv Track"
+• "Hey Google, open shopping in Zelv Track"
+
+🔒 100% PRIVATE, 100% OFFLINE
+No account. No internet required. No analytics. No ads. Everything is stored locally on your device using Hive. Uninstall the app and all data is gone — we never touched it.
+
+🎨 BEAUTIFUL, CUSTOMISABLE DESIGN
+Light and dark mode. Six accent colour presets. Block-specific colours throughout — amber for morning, green for midday, violet for afternoon, and more — so the app feels alive and visual.
+
+────────────────────────────────────────
+CATEGORY: Productivity (or Health & Fitness)
+CONTENT RATING: Everyone
+TAGS: habit tracker, routine, productivity, planner, shopping list, project manager, ADHD, dopamine, offline
+════════════════════════════════════════
