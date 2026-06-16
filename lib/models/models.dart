@@ -146,36 +146,49 @@ class ProjectModel {
 // ─── Default seed data ────────────────────────────────────────────────────────
 
 List<HabitModel> defaultHabits() => [
-  // ── Morning ───────────────────────────────────────────────────────────────
-  HabitModel(id: 'no_phone_10',    label: 'No phone first 10 min',           blockId: 'morning'),
-  HabitModel(id: 'cold_shower',    label: 'Cold shower',                      blockId: 'morning'),
-  HabitModel(id: 'get_dressed',    label: 'Get dressed — no scrolling',       blockId: 'morning'),
-  HabitModel(id: 'breakfast',      label: 'Breakfast',                        blockId: 'morning', isNonNeg: true),
-  HabitModel(id: 'protein_first',  label: 'Protein first',                    blockId: 'morning'),
-  HabitModel(id: 'no_caff_early',  label: 'No caffeine yet',                  blockId: 'morning'),
-  HabitModel(id: 'waited_90min',   label: 'Waited 90 min after waking',       blockId: 'morning'),
-  // ── Lab / Work ───────────────────────────────────────────────────────────
-  HabitModel(id: 'phone_away',     label: 'Phone out of reach',               blockId: 'lab'),
-  HabitModel(id: 'hard_tasks',     label: 'Hard tasks in alert window',       blockId: 'lab'),
-  HabitModel(id: 'work_near_ppl',  label: 'Work near others when possible',   blockId: 'lab'),
-  // ── Midday ───────────────────────────────────────────────────────────────
-  HabitModel(id: 'protein_lunch',  label: 'Protein-rich lunch',               blockId: 'midday'),
-  HabitModel(id: 'no_carb_only',   label: 'Avoid pure carb meal',             blockId: 'midday'),
-  HabitModel(id: 'water_lunch',    label: 'Water',                            blockId: 'midday'),
-  // ── Afternoon ────────────────────────────────────────────────────────────
-  HabitModel(id: 'herbal_tea',     label: 'Herbal tea @ 15:30',              blockId: 'afternoon', isNonNeg: true),
-  HabitModel(id: 'no_sugar_crash', label: 'No sugar crash',                   blockId: 'afternoon'),
-  HabitModel(id: 'last_caffeine',  label: 'Last caffeine — hard rule',        blockId: 'afternoon'),
-  HabitModel(id: 'wind_buffer',    label: 'Light tasks only (16:30–17:30)',   blockId: 'afternoon'),
-  // ── Evening ──────────────────────────────────────────────────────────────
-  HabitModel(id: 'workout',        label: '30 min workout',                   blockId: 'evening'),
-  HabitModel(id: 'protein_shake',  label: 'Protein shake after workout',      blockId: 'evening'),
-  HabitModel(id: 'post_shower',    label: 'Shower after workout',             blockId: 'evening'),
-  HabitModel(id: 'cook_eat',       label: 'Cook and eat dinner',              blockId: 'evening'),
+  // ── Morning 7:00–7:30 ──────────────────────────────────────────────────────
+  HabitModel(id: 'no_phone_10',    label: 'No phone first 10 min',                 blockId: 'morning'),
+  HabitModel(id: 'cold_shower',    label: 'Cold shower (2–3 min cold at end)',      blockId: 'morning'),
+  HabitModel(id: 'get_dressed',    label: 'Get dressed — no screen scrolling',      blockId: 'morning'),
+  // ── Breakfast 7:30 ────────────────────────────────────────────────────────
+  HabitModel(id: 'breakfast',      label: 'Breakfast',                              blockId: 'morning', isNonNeg: true),
+  HabitModel(id: 'protein_first',  label: 'Protein first (eggs, paneer, nuts)',     blockId: 'morning'),
+  HabitModel(id: 'cemtore',        label: 'Cemtore K2-7 — 1 capsule with food',    blockId: 'morning'),
+  HabitModel(id: 'omega3',         label: 'Omega-3 — 1–2g EPA with food',          blockId: 'morning'),
+  HabitModel(id: 'no_caff_early',  label: 'No caffeine yet',                        blockId: 'morning'),
+  // ── Chai/Coffee 8:00 ──────────────────────────────────────────────────────
+  HabitModel(id: 'chai_or_coffee', label: 'Chai OR coffee with L-theanine (not both)', blockId: 'morning'),
+  HabitModel(id: 'waited_90min',   label: 'Waited 90 min after waking',             blockId: 'morning'),
+  // ── Lab / Work 9:00 ───────────────────────────────────────────────────────
+  HabitModel(id: 'phone_away',     label: 'Phone out of reach',                     blockId: 'lab'),
+  HabitModel(id: 'hard_tasks',     label: 'Hard tasks in alert window',             blockId: 'lab'),
+  HabitModel(id: 'work_near_ppl',  label: 'Work near others when possible',         blockId: 'lab'),
+  // ── Midday Lunch ──────────────────────────────────────────────────────────
+  HabitModel(id: 'protein_lunch',  label: 'Protein prioritised (dal, paneer, chicken)', blockId: 'midday'),
+  HabitModel(id: 'no_carb_only',   label: 'Avoid pure carb meal',                  blockId: 'midday'),
+  HabitModel(id: 'ckap_syn_lunch', label: 'Ckap-Syn — 1 tablet with food',         blockId: 'midday'),
+  HabitModel(id: 'water_lunch',    label: 'Water',                                  blockId: 'midday'),
+  // ── Afternoon 15:30 ───────────────────────────────────────────────────────
+  HabitModel(id: 'tulsi_tea',      label: 'Green Tulsi Tea @ 15:30',               blockId: 'afternoon', isNonNeg: true),
+  HabitModel(id: 'no_sugar_crash', label: 'No sugar crash — keep it clean',         blockId: 'afternoon'),
+  HabitModel(id: 'last_caffeine',  label: 'Last caffeine of the day — hard rule',   blockId: 'afternoon'),
+  HabitModel(id: 'wind_buffer',    label: 'Light tasks only (16:30–17:30)',         blockId: 'afternoon'),
+  HabitModel(id: 'no_caff_1700',   label: 'No new caffeine after 17:00',            blockId: 'afternoon'),
+  // ── Evening Workout ───────────────────────────────────────────────────────
+  HabitModel(id: 'trois_rollon',   label: 'Trois roll-on to knee 5–10 min before', blockId: 'evening'),
+  HabitModel(id: 'cycling_30',     label: '30 min cycling (rehab intensity)',        blockId: 'evening'),
+  HabitModel(id: 'knee_check',     label: 'Stop if knee swells or locks',           blockId: 'evening'),
+  HabitModel(id: 'protein_shake',  label: 'Protein shake immediately after',        blockId: 'evening'),
+  HabitModel(id: 'arthrosave',     label: 'Arthrosave Trio in shake / right after', blockId: 'evening'),
+  HabitModel(id: 'post_shower',    label: 'Shower after workout',                   blockId: 'evening'),
+  // ── Dinner ────────────────────────────────────────────────────────────────
+  HabitModel(id: 'cook_eat',       label: 'Cook and eat',                           blockId: 'evening'),
+  HabitModel(id: 'ckap_syn_din',   label: 'Ckap-Syn — 1 tablet with dinner',       blockId: 'evening'),
+  HabitModel(id: 'trois_bed',      label: 'Trois roll-on if knee throbbing',        blockId: 'evening'),
   // ── Night ─────────────────────────────────────────────────────────────────
-  HabitModel(id: 'screens_dim',    label: 'Screens dim 30 min before sleep',  blockId: 'night'),
-  HabitModel(id: 'phone_charging', label: 'Phone charging out of reach',      blockId: 'night'),
-  HabitModel(id: 'sleep_2300',     label: 'Sleep by 23:00',                   blockId: 'night', isNonNeg: true),
+  HabitModel(id: 'screens_dim',    label: 'Screens dim 30 min before sleep',        blockId: 'night'),
+  HabitModel(id: 'phone_charging', label: 'Phone charging out of reach',            blockId: 'night'),
+  HabitModel(id: 'sleep_2300',     label: 'Sleep by 23:00',                         blockId: 'night', isNonNeg: true),
 ];
 
 // ─── Shop ────────────────────────────────────────────────────────────────────
@@ -240,21 +253,31 @@ class ShoppingItem {
 
 List<ProjectModel> defaultProjects() => [
   ProjectModel(
-    id: 'sample_project',
-    name: 'Sample Project',
+    id: 'geneva',
+    name: 'Geneva Exit',
     tasks: [
-      TaskGroup(id: 'sp_research', label: 'Research', subtasks: [
-        SubTaskModel(id: 'r1', label: 'Define scope'),
-        SubTaskModel(id: 'r2', label: 'Gather resources'),
+      TaskGroup(id: 'g_pension', label: 'Pension', subtasks: [
+        SubTaskModel(id: 'p1', label: 'Pension transfer form'),
+        SubTaskModel(id: 'p2', label: 'Sign & notarise pension docs'),
+        SubTaskModel(id: 'p3', label: 'Send pension to new provider'),
       ]),
-      TaskGroup(id: 'sp_build', label: 'Build', subtasks: [
-        SubTaskModel(id: 'b1', label: 'Set up environment'),
-        SubTaskModel(id: 'b2', label: 'Implement core feature'),
-        SubTaskModel(id: 'b3', label: 'Review & iterate'),
+      TaskGroup(id: 'g_bank', label: 'Bank', subtasks: [
+        SubTaskModel(id: 'p4', label: 'Export 3-year statement'),
+        SubTaskModel(id: 'p5', label: 'Redirect standing orders'),
+        SubTaskModel(id: 'p6', label: 'Submit closure request'),
       ]),
-      TaskGroup(id: 'sp_ship', label: 'Ship', subtasks: [
-        SubTaskModel(id: 's1', label: 'Final review'),
-        SubTaskModel(id: 's2', label: 'Deploy'),
+      TaskGroup(id: 'g_apartment', label: 'Apartment', subtasks: [
+        SubTaskModel(id: 'p7', label: 'Send notice to landlord'),
+        SubTaskModel(id: 'p8', label: 'Schedule exit inspection'),
+        SubTaskModel(id: 'p9', label: 'Deposit refund confirmed'),
+      ]),
+      TaskGroup(id: 'g_commune', label: 'Commune / Deregistration', subtasks: [
+        SubTaskModel(id: 'p10', label: 'Fill cantonal deregistration form'),
+        SubTaskModel(id: 'p11', label: 'Submit to commune'),
+      ]),
+      TaskGroup(id: 'g_insurance', label: 'Health Insurance', subtasks: [
+        SubTaskModel(id: 'p12', label: 'Cancel Swiss health insurance'),
+        SubTaskModel(id: 'p13', label: 'Activate new-country cover'),
       ]),
     ],
   ),

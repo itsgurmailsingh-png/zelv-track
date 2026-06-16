@@ -1,4 +1,4 @@
-package com.example.routine_tracker
+package com.zelvtrack.app
 
 import android.content.Intent
 import android.os.Bundle
