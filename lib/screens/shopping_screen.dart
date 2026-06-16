@@ -42,13 +42,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     _load();
   }
 
-  void _openItemSheet([ShoppingItem? editing]) {
+  void _openItemSheet([ShoppingItem? editing, String? preselectedShopId]) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _ItemSheet(
         editing: editing,
+        preselectedShopId: preselectedShopId,
         shops: _shops,
         onSave: (item) async {
           if (editing == null) {
@@ -62,6 +63,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         },
         onDelete: editing == null ? null : () async {
           await _s.deleteShoppingItem(editing.id);
+          _load();
+        },
+        onAddShop: (shop) async {
+          await _s.addShop(shop);
           _load();
         },
       ),
@@ -141,8 +146,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 onToggle: (id) => _toggle(id),
                 onDelete: (id) => _delete(id),
                 onEditItem: (item) => _openItemSheet(item),
-                onAddItem: () => _openItemSheet(
-                  ShoppingItem(id: _s.newId(), label: '', shop: shop.id)),
+                onAddItem: () => _openItemSheet(null, shop.id),
               );
             }),
 
@@ -414,13 +418,19 @@ class _ItemTile extends StatelessWidget {
 
 class _ItemSheet extends StatefulWidget {
   final ShoppingItem? editing;
+  final String? preselectedShopId;
   final List<ShopModel> shops;
   final void Function(ShoppingItem) onSave;
   final VoidCallback? onDelete;
+  final void Function(ShopModel)? onAddShop;
 
   const _ItemSheet({
-    this.editing, required this.shops,
-    required this.onSave, this.onDelete,
+    this.editing,
+    this.preselectedShopId,
+    required this.shops,
+    required this.onSave,
+    this.onDelete,
+    this.onAddShop,
   });
 
   @override
@@ -430,18 +440,43 @@ class _ItemSheet extends StatefulWidget {
 class _ItemSheetState extends State<_ItemSheet> {
   late final TextEditingController _labelCtrl;
   late final TextEditingController _brandCtrl;
+  late final TextEditingController _newShopCtrl;
   String? _selectedShopId;
+  late List<ShopModel> _shops;
+  bool _addingShop = false;
+  String _newShopEmoji = '🏪';
+
+  static const _emojis = ['🛒','💊','🥦','🍖','🧴','🏪','💰','🐟','🥐','🌿','🏬','🛍️'];
 
   @override
   void initState() {
     super.initState();
-    _labelCtrl = TextEditingController(text: widget.editing?.label ?? '');
-    _brandCtrl = TextEditingController(text: widget.editing?.brand ?? '');
-    _selectedShopId = widget.editing?.shop;
+    _labelCtrl    = TextEditingController(text: widget.editing?.label ?? '');
+    _brandCtrl    = TextEditingController(text: widget.editing?.brand ?? '');
+    _newShopCtrl  = TextEditingController();
+    _shops        = List.from(widget.shops);
+    _selectedShopId = widget.editing?.shop ?? widget.preselectedShopId;
   }
 
   @override
-  void dispose() { _labelCtrl.dispose(); _brandCtrl.dispose(); super.dispose(); }
+  void dispose() { _labelCtrl.dispose(); _brandCtrl.dispose(); _newShopCtrl.dispose(); super.dispose(); }
+
+  void _saveNewShop(AppColors c) {
+    final name = _newShopCtrl.text.trim();
+    if (name.isEmpty) return;
+    final shop = ShopModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: name, emoji: _newShopEmoji,
+    );
+    widget.onAddShop?.call(shop);
+    setState(() {
+      _shops.add(shop);
+      _selectedShopId = shop.id;
+      _addingShop = false;
+      _newShopCtrl.clear();
+      _newShopEmoji = '🏪';
+    });
+  }
 
   void _save() {
     final label = _labelCtrl.text.trim();
@@ -510,14 +545,80 @@ class _ItemSheetState extends State<_ItemSheet> {
           const SizedBox(height: 14),
 
           // Shop picker
-          Align(alignment: Alignment.centerLeft,
-            child: Text('Shop', style: TextStyle(
-              color: c.textSecondary, fontSize: 12, fontWeight: FontWeight.w700))),
+          Row(children: [
+            Text('Shop', style: TextStyle(
+              color: c.textSecondary, fontSize: 12, fontWeight: FontWeight.w700)),
+            const Spacer(),
+            GestureDetector(
+              onTap: () => setState(() { _addingShop = !_addingShop; }),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(_addingShop ? Icons.close_rounded : Icons.add_rounded,
+                    color: c.accent, size: 14),
+                const SizedBox(width: 3),
+                Text(_addingShop ? 'Cancel' : 'New shop',
+                    style: TextStyle(color: c.accent, fontSize: 12, fontWeight: FontWeight.w600)),
+              ]),
+            ),
+          ]),
           const SizedBox(height: 8),
+
+          // Inline add shop
+          if (_addingShop) ...[
+            Wrap(spacing: 6, runSpacing: 6, children: _emojis.map((e) =>
+              GestureDetector(
+                onTap: () => setState(() => _newShopEmoji = e),
+                child: Container(
+                  width: 34, height: 34,
+                  decoration: BoxDecoration(
+                    color: _newShopEmoji == e ? c.accent.withValues(alpha: 0.18) : c.surfaceHigh,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: _newShopEmoji == e ? c.accent : Colors.transparent),
+                  ),
+                  child: Center(child: Text(e, style: const TextStyle(fontSize: 18))),
+                ),
+              )).toList()),
+            const SizedBox(height: 8),
+            Row(children: [
+              Container(
+                width: 34, height: 34,
+                decoration: BoxDecoration(color: c.surfaceHigh, borderRadius: BorderRadius.circular(8)),
+                child: Center(child: Text(_newShopEmoji, style: const TextStyle(fontSize: 18))),
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: TextField(
+                controller: _newShopCtrl,
+                autofocus: false,
+                style: TextStyle(color: c.textPrimary, fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: 'Shop name  e.g. BigBasket, Zepto…',
+                  hintStyle: TextStyle(color: c.textDisabled, fontSize: 13),
+                  filled: true, fillColor: c.surfaceHigh,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  isDense: true,
+                ),
+                textCapitalization: TextCapitalization.words,
+                onSubmitted: (_) => _saveNewShop(c),
+              )),
+              const SizedBox(width: 8),
+              Material(
+                color: c.accent,
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  onTap: () => _saveNewShop(c),
+                  borderRadius: BorderRadius.circular(8),
+                  child: const SizedBox(width: 34, height: 34,
+                    child: Icon(Icons.check_rounded, color: Colors.white, size: 18)),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 10),
+          ],
+
           Wrap(
             spacing: 8, runSpacing: 8,
             children: [
-              // No shop option
               GestureDetector(
                 onTap: () => setState(() => _selectedShopId = null),
                 child: _ShopChip(
@@ -526,7 +627,7 @@ class _ItemSheetState extends State<_ItemSheet> {
                   selected: _selectedShopId == null,
                 ),
               ),
-              ...widget.shops.asMap().entries.map((e) {
+              ..._shops.asMap().entries.map((e) {
                 final shop  = e.value;
                 final color = _shopColor(e.key);
                 return GestureDetector(
