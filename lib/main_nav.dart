@@ -3,6 +3,7 @@ import 'screens/routine_screen.dart';
 import 'screens/heatmap_screen.dart';
 import 'screens/projects_screen.dart';
 import 'screens/shopping_screen.dart';
+import 'screens/plan_screen.dart';
 import 'services/theme_service.dart';
 import 'services/intent_service.dart';
 import 'theme/app_theme.dart';
@@ -37,6 +38,7 @@ class _MainNavState extends State<MainNav> {
     HeatmapScreen(),
     ProjectsScreen(),
     ShoppingScreen(),
+    PlanScreen(),
   ];
 
   static const _navItems = [
@@ -44,6 +46,7 @@ class _MainNavState extends State<MainNav> {
     _NavDef(Icons.bar_chart_outlined,      Icons.bar_chart,  'Stats',    Color(0xFF7C6EFF)),
     _NavDef(Icons.rocket_launch_outlined,  Icons.rocket_launch, 'Goals', Color(0xFFFF6B35)),
     _NavDef(Icons.shopping_cart_outlined,  Icons.shopping_cart, 'Shop',  Color(0xFF00BFFF)),
+    _NavDef(Icons.psychology_alt_outlined, Icons.psychology_alt, 'Plan', Color(0xFFFF4D6D)),
   ];
 
   void _showTheme(BuildContext context) {

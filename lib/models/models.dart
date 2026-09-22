@@ -210,12 +210,11 @@ class ShopModel {
 }
 
 List<ShopModel> defaultShops() => [
-  ShopModel(id: 'migros',   name: 'Migros',   emoji: '🛒'),
-  ShopModel(id: 'coop',     name: 'Coop',     emoji: '🛒'),
-  ShopModel(id: 'lidl',     name: 'Lidl',     emoji: '💰'),
-  ShopModel(id: 'aldi',     name: 'Aldi',     emoji: '💰'),
-  ShopModel(id: 'pharmacy', name: 'Pharmacy', emoji: '💊'),
-  ShopModel(id: 'market',   name: 'Market',   emoji: '🥦'),
+  ShopModel(id: 'supermarket', name: 'Supermarket', emoji: '🛒'),
+  ShopModel(id: 'budget',      name: 'Budget store', emoji: '💰'),
+  ShopModel(id: 'pharmacy',    name: 'Pharmacy',     emoji: '💊'),
+  ShopModel(id: 'market',      name: 'Market',       emoji: '🥦'),
+  ShopModel(id: 'other',       name: 'Other',        emoji: '🏪'),
 ];
 
 // ─── Shopping item ────────────────────────────────────────────────────────────
@@ -251,34 +250,313 @@ class ShoppingItem {
   );
 }
 
-List<ProjectModel> defaultProjects() => [
-  ProjectModel(
-    id: 'geneva',
-    name: 'Geneva Exit',
-    tasks: [
-      TaskGroup(id: 'g_pension', label: 'Pension', subtasks: [
-        SubTaskModel(id: 'p1', label: 'Pension transfer form'),
-        SubTaskModel(id: 'p2', label: 'Sign & notarise pension docs'),
-        SubTaskModel(id: 'p3', label: 'Send pension to new provider'),
-      ]),
-      TaskGroup(id: 'g_bank', label: 'Bank', subtasks: [
-        SubTaskModel(id: 'p4', label: 'Export 3-year statement'),
-        SubTaskModel(id: 'p5', label: 'Redirect standing orders'),
-        SubTaskModel(id: 'p6', label: 'Submit closure request'),
-      ]),
-      TaskGroup(id: 'g_apartment', label: 'Apartment', subtasks: [
-        SubTaskModel(id: 'p7', label: 'Send notice to landlord'),
-        SubTaskModel(id: 'p8', label: 'Schedule exit inspection'),
-        SubTaskModel(id: 'p9', label: 'Deposit refund confirmed'),
-      ]),
-      TaskGroup(id: 'g_commune', label: 'Commune / Deregistration', subtasks: [
-        SubTaskModel(id: 'p10', label: 'Fill cantonal deregistration form'),
-        SubTaskModel(id: 'p11', label: 'Submit to commune'),
-      ]),
-      TaskGroup(id: 'g_insurance', label: 'Health Insurance', subtasks: [
-        SubTaskModel(id: 'p12', label: 'Cancel Swiss health insurance'),
-        SubTaskModel(id: 'p13', label: 'Activate new-country cover'),
-      ]),
-    ],
-  ),
-];
+// ─── Recalibrated plan schedule (reference — mirrors kBlockDefs' pattern) ────
+// Pure functions of plan-week number, not stored per-user. See the week-4
+// decision point: weeks 1–4 run the recalibrated timeline (rung held at 1,
+// stress inoculation delayed); week 5 onward resumes the original calendar
+// weeks unshifted, which compresses rung 2's window to weeks 5–6.
+
+String planPhaseNameForWeek(int week) {
+  if (week <= 4) return 'Phase A — Full push';
+  if (week <= 8) return 'Phase B — Build';
+  return 'Phase C/D — Load & test';
+}
+
+String planPhaseThemeForWeek(int week) {
+  if (week <= 4) return 'Rumination + social-anxiety core work. Everything else at maintenance.';
+  if (week <= 8) return 'Ladder and stress inoculation resume, on whichever path Week 4 selected.';
+  return 'Load phase. Final measures and decision table at Week 12.';
+}
+
+String planRungForWeek(int week) {
+  if (week <= 4) return 'Rung 1 — low-stakes initiations (hold, do not advance)';
+  if (week <= 6) return 'Rung 2 — peer initiations, 1 follow-up/week';
+  if (week <= 10) return 'Rung 3 — new-setting initiations weekly, 2 follow-ups/week';
+  return 'Rung 4 — maintain, count people at 3+ contacts';
+}
+
+bool planStressInoculationActiveForWeek(int week) => week >= 5;
+
+String planStressInoculationStatusForWeek(int week) {
+  if (week < 5) return 'Not started — resumes Week 5';
+  if (week <= 8) return 'Stage 1 — weekly deliberate stressor + debrief';
+  return 'Stage 2 — difficulty +1, reappraisal script';
+}
+
+List<String> planReadingForWeek(int week) {
+  if (week <= 4) return const ['Hope/Heimberg — core chapters (finish by Wk4)', 'Carbonell — Worry Trick (finish by Wk4)'];
+  if (week <= 6) return const ['Kahneman — Thinking Fast & Slow (Pt 1–3)'];
+  if (week <= 8) return const ['Korb — Upward Spiral', 'Goleman & Davidson — Altered Traits (from Wk7)'];
+  if (week <= 11) return const ['Nagoski — Come As You Are', 'Tetlock — Superforecasting'];
+  return const ['Galef — Scout Mindset', 'DBT Skills Workbook — dialectics chapter'];
+}
+
+// ─── Daily log (MVD — numbers, not ticks) ────────────────────────────────────
+
+class DailyLogModel {
+  final String date; // yyyy-MM-dd
+  int trainingMin;
+  String? trainingType; // strength / rehab / cycle / walk / hike / boxing
+  int mealsPlanned; // 0–3
+  int deviceFreeMin;
+  bool socialInitiation;
+  String? initiationType; // stranger / peer / follow-up
+  String prediction;
+  int predictedConfidence; // 0–100
+  String outcome;
+  bool? predictionCorrect; // null = unresolved
+  int mood; // 1–10, 0 = not logged
+  int ruminationLoops;
+  bool ruminationPostponementUsed; // Weeks 1–4 only, then retires from MVD
+  String ruminationPostponementNote;
+  int kneePain; // 0–10
+  bool kneeSwelling;
+  String notes;
+
+  DailyLogModel({
+    required this.date,
+    this.trainingMin = 0,
+    this.trainingType,
+    this.mealsPlanned = 0,
+    this.deviceFreeMin = 0,
+    this.socialInitiation = false,
+    this.initiationType,
+    this.prediction = '',
+    this.predictedConfidence = 0,
+    this.outcome = '',
+    this.predictionCorrect,
+    this.mood = 0,
+    this.ruminationLoops = 0,
+    this.ruminationPostponementUsed = false,
+    this.ruminationPostponementNote = '',
+    this.kneePain = 0,
+    this.kneeSwelling = false,
+    this.notes = '',
+  });
+
+  Map<String, dynamic> toJson() => {
+        'date': date,
+        'trainingMin': trainingMin,
+        'trainingType': trainingType,
+        'mealsPlanned': mealsPlanned,
+        'deviceFreeMin': deviceFreeMin,
+        'socialInitiation': socialInitiation,
+        'initiationType': initiationType,
+        'prediction': prediction,
+        'predictedConfidence': predictedConfidence,
+        'outcome': outcome,
+        'predictionCorrect': predictionCorrect,
+        'mood': mood,
+        'ruminationLoops': ruminationLoops,
+        'ruminationPostponementUsed': ruminationPostponementUsed,
+        'ruminationPostponementNote': ruminationPostponementNote,
+        'kneePain': kneePain,
+        'kneeSwelling': kneeSwelling,
+        'notes': notes,
+      };
+
+  factory DailyLogModel.fromJson(Map<String, dynamic> j) => DailyLogModel(
+        date: j['date'] as String,
+        trainingMin: j['trainingMin'] as int? ?? 0,
+        trainingType: j['trainingType'] as String?,
+        mealsPlanned: j['mealsPlanned'] as int? ?? 0,
+        deviceFreeMin: j['deviceFreeMin'] as int? ?? 0,
+        socialInitiation: j['socialInitiation'] as bool? ?? false,
+        initiationType: j['initiationType'] as String?,
+        prediction: j['prediction'] as String? ?? '',
+        predictedConfidence: j['predictedConfidence'] as int? ?? 0,
+        outcome: j['outcome'] as String? ?? '',
+        predictionCorrect: j['predictionCorrect'] as bool?,
+        mood: j['mood'] as int? ?? 0,
+        ruminationLoops: j['ruminationLoops'] as int? ?? 0,
+        ruminationPostponementUsed: j['ruminationPostponementUsed'] as bool? ?? false,
+        ruminationPostponementNote: j['ruminationPostponementNote'] as String? ?? '',
+        kneePain: j['kneePain'] as int? ?? 0,
+        kneeSwelling: j['kneeSwelling'] as bool? ?? false,
+        notes: j['notes'] as String? ?? '',
+      );
+}
+
+// ─── Weekly review (Sunday) ───────────────────────────────────────────────────
+
+class ForecastModel {
+  String text;
+  int probability; // 0–100
+  String? outcome;
+  bool? correct;
+
+  ForecastModel({
+    this.text = '',
+    this.probability = 0,
+    this.outcome,
+    this.correct,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'text': text,
+        'probability': probability,
+        'outcome': outcome,
+        'correct': correct,
+      };
+
+  factory ForecastModel.fromJson(Map<String, dynamic> j) => ForecastModel(
+        text: j['text'] as String? ?? '',
+        probability: j['probability'] as int? ?? 0,
+        outcome: j['outcome'] as String?,
+        correct: j['correct'] as bool?,
+      );
+}
+
+List<ForecastModel> defaultForecasts() =>
+    List.generate(3, (_) => ForecastModel());
+
+class WeeklyReviewModel {
+  final String weekOf; // yyyy-MM-dd, Sunday
+  List<ForecastModel> forecasts;
+  String greyDrillCertainty;
+  String greyDrillOpposite;
+  String stressInoculationWhat;
+  String stressInoculationDebrief;
+  int followUpsSent;
+  int peopleAt3PlusContacts;
+
+  WeeklyReviewModel({
+    required this.weekOf,
+    List<ForecastModel>? forecasts,
+    this.greyDrillCertainty = '',
+    this.greyDrillOpposite = '',
+    this.stressInoculationWhat = '',
+    this.stressInoculationDebrief = '',
+    this.followUpsSent = 0,
+    this.peopleAt3PlusContacts = 0,
+  }) : forecasts = forecasts ?? defaultForecasts();
+
+  Map<String, dynamic> toJson() => {
+        'weekOf': weekOf,
+        'forecasts': forecasts.map((f) => f.toJson()).toList(),
+        'greyDrillCertainty': greyDrillCertainty,
+        'greyDrillOpposite': greyDrillOpposite,
+        'stressInoculationWhat': stressInoculationWhat,
+        'stressInoculationDebrief': stressInoculationDebrief,
+        'followUpsSent': followUpsSent,
+        'peopleAt3PlusContacts': peopleAt3PlusContacts,
+      };
+
+  factory WeeklyReviewModel.fromJson(Map<String, dynamic> j) =>
+      WeeklyReviewModel(
+        weekOf: j['weekOf'] as String,
+        forecasts: (j['forecasts'] as List<dynamic>? ?? [])
+            .map((f) => ForecastModel.fromJson(f as Map<String, dynamic>))
+            .toList(),
+        greyDrillCertainty: j['greyDrillCertainty'] as String? ?? '',
+        greyDrillOpposite: j['greyDrillOpposite'] as String? ?? '',
+        stressInoculationWhat: j['stressInoculationWhat'] as String? ?? '',
+        stressInoculationDebrief:
+            j['stressInoculationDebrief'] as String? ?? '',
+        followUpsSent: j['followUpsSent'] as int? ?? 0,
+        peopleAt3PlusContacts: j['peopleAt3PlusContacts'] as int? ?? 0,
+      );
+}
+
+// ─── Scale measurement (weeks 1, 6, 12) ──────────────────────────────────────
+
+class ScaleMeasurementModel {
+  final String date;
+  String type; // 'baseline' (full battery, weeks 1/6/12) | 'checkpoint' (PTQ/SPIN/PSS-10 only, weeks 4/8)
+  int? pss10;
+  int? ucla;
+  int? ptq;
+  int? spin;
+  int? rhr;
+  double? sleepAvg;
+  double? screenAvg;
+  double? weight;
+  int? soiRBehavior;
+  int? soiRAttitude;
+  int? soiRDesire;
+
+  ScaleMeasurementModel({
+    required this.date,
+    this.type = 'baseline',
+    this.pss10,
+    this.ucla,
+    this.ptq,
+    this.spin,
+    this.rhr,
+    this.sleepAvg,
+    this.screenAvg,
+    this.weight,
+    this.soiRBehavior,
+    this.soiRAttitude,
+    this.soiRDesire,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'date': date,
+        'type': type,
+        'pss10': pss10,
+        'ucla': ucla,
+        'ptq': ptq,
+        'spin': spin,
+        'rhr': rhr,
+        'sleepAvg': sleepAvg,
+        'screenAvg': screenAvg,
+        'weight': weight,
+        'soiRBehavior': soiRBehavior,
+        'soiRAttitude': soiRAttitude,
+        'soiRDesire': soiRDesire,
+      };
+
+  factory ScaleMeasurementModel.fromJson(Map<String, dynamic> j) =>
+      ScaleMeasurementModel(
+        date: j['date'] as String,
+        type: j['type'] as String? ?? 'baseline',
+        pss10: j['pss10'] as int?,
+        ucla: j['ucla'] as int?,
+        ptq: j['ptq'] as int?,
+        spin: j['spin'] as int?,
+        rhr: j['rhr'] as int?,
+        sleepAvg: (j['sleepAvg'] as num?)?.toDouble(),
+        screenAvg: (j['screenAvg'] as num?)?.toDouble(),
+        weight: (j['weight'] as num?)?.toDouble(),
+        soiRBehavior: j['soiRBehavior'] as int?,
+        soiRAttitude: j['soiRAttitude'] as int?,
+        soiRDesire: j['soiRDesire'] as int?,
+      );
+}
+
+// ─── Uploaded report (PDF text extraction) ───────────────────────────────────
+
+class ReportModel {
+  final String id;
+  String title;
+  String filename;
+  String uploadedAt; // yyyy-MM-dd
+  String extractedText;
+
+  ReportModel({
+    required this.id,
+    required this.title,
+    required this.filename,
+    required this.uploadedAt,
+    this.extractedText = '',
+  });
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'filename': filename,
+        'uploadedAt': uploadedAt,
+        'extractedText': extractedText,
+      };
+
+  factory ReportModel.fromJson(Map<String, dynamic> j) => ReportModel(
+        id: j['id'] as String,
+        title: j['title'] as String,
+        filename: j['filename'] as String,
+        uploadedAt: j['uploadedAt'] as String,
+        extractedText: j['extractedText'] as String? ?? '',
+      );
+}
+
+List<ProjectModel> defaultProjects() => [];

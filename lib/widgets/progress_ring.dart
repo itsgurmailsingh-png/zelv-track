@@ -6,12 +6,16 @@ class ProgressRing extends StatefulWidget {
   final double progress;
   final double size;
   final double strokeWidth;
+  final String label;
+  final String? centerText;
 
   const ProgressRing({
     super.key,
     required this.progress,
     this.size = 180,
     this.strokeWidth = 14,
+    this.label = 'TODAY',
+    this.centerText,
   });
 
   @override
@@ -72,7 +76,7 @@ class _ProgressRingState extends State<ProgressRing>
             accentColor: c.accent,
             trackColor: c.surfaceHigh,
           ),
-          child: Center(child: _Label(progress: _anim.value)),
+          child: Center(child: _Label(progress: _anim.value, label: widget.label, centerText: widget.centerText)),
         ),
       ),
     );
@@ -146,7 +150,9 @@ class _RingPainter extends CustomPainter {
 
 class _Label extends StatelessWidget {
   final double progress;
-  const _Label({required this.progress});
+  final String label;
+  final String? centerText;
+  const _Label({required this.progress, required this.label, this.centerText});
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +162,7 @@ class _Label extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          '$pct%',
+          centerText ?? '$pct%',
           style: TextStyle(
             color: c.textPrimary,
             fontSize: 36,
@@ -166,7 +172,7 @@ class _Label extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'TODAY',
+          label,
           style: TextStyle(
             color: c.textSecondary,
             fontSize: 11,
